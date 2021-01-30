@@ -1,0 +1,8 @@
+{
+    "url" : "http://127.0.0.1:8151/testConn",
+    "req" : {
+        "name":"zhaolu",
+        "age":21,
+        "text":"hello world"
+    }
+}
