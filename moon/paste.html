@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../dist/css/semantic.css">
+  <script src="../dist/js/jquery.js"></script>
+  <title>rongming</title>
+  <script>
+    $(document).ready(function(){
+        $('#menu').load("./menu.html");
+        $('#save').click(function(){
+            $.post('http://127.0.0.1:8151/savePaste',
+            JSON.stringify({
+                'token' : $('#token').val(),
+                'text' : $('#text').val()
+            }), function(data) {
+                $('#response').text(data);
+            });
+        });
+        $('#load').click(function(){
+            $.post('http://127.0.0.1:8151/loadPaste',
+            JSON.stringify({
+                'token' : $('#token').val()
+            }), function(data) {
+                var obj = JSON.parse(data);
+                if (obj["error"] == 0) {
+                    text = obj["text"];
+                    $('#text').text(text);
+                    delete obj["text"];
+                    $('#response').text(JSON.stringify(obj));
+                } else {
+                    $('#response').text(data);
+                }
+            });
+        });
+    });
+  </script>
+</head>
+<body>
+   <div class="container ui fluid">
+     <div class="ui grid">
+        <div id="menu" class="ui two wide column left fixed vertical menu">
+        </div>
+        <div class="ui fourteen wide column segment">
+          <h2 class="ui left floated header">Paste</h2>
+          <div class="ui clearing divider"></div>
+          <div class="ui form">
+            <div class="ui icon input field">
+                <input type="text" placeholder="Token..." size="30" id="token">
+                <button class="ui button" id="load">load</button>
+                <button class="ui button" id="save">save</button>
+            </div>
+            <div class="ui field visible message">
+                <p id="response"></p>
+            </div>
+            <div class="field">
+                <textarea id="text" rows="100"></textarea>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</body>
+</html>

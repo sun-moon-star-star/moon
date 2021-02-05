@@ -8,17 +8,17 @@ func GetTableType(table string)interface{} {
 	table = strings.ToLower(table)
 
 	if table == "trace" {
-		return &trace{}
+		return &Trace{}
 	} else if table == "span" {
-		return &span{}
+		return &Span{}
 	} else if table == "span_reference" {
-		return &span_reference{}
+		return &SpanReference{}
 	} else if table == "log" {
-		return &log{}
+		return &Log{}
 	} else if table == "tag" {
-		return &tag{}
+		return &Tag{}
 	} else if table == "baggage" {
-		return &baggage{}
+		return &Baggage{}
 	}
 
 	return nil
@@ -28,17 +28,17 @@ func GetTableArrayType(table string) interface{} {
 	table = strings.ToLower(table)
 
 	if table == "trace" {
-		return &[]trace{}
+		return &[]Trace{}
 	} else if table == "span" {
-		return &[]span{}
+		return &[]Span{}
 	} else if table == "span_reference" {
-		return &[]span_reference{}
+		return &[]SpanReference{}
 	} else if table == "log" {
-		return &[]log{}
+		return &[]Log{}
 	} else if table == "tag" {
-		return &[]tag{}
+		return &[]Tag{}
 	} else if table == "baggage" {
-		return &[]baggage{}
+		return &[]Baggage{}
 	}
 
 	return nil
