@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../dist/css/semantic.css">
+  <script src="../dist/js/jquery.js"></script>
+  <title>rongming</title>
+  <script>
+    $(document).ready(function(){
+        $('#menu').load("./menu.html");
+        $('#login').click(function(){
+            $.post('http://127.0.0.1:8151/loadTables',
+            JSON.stringify({
+                'hostname' : $('#hostname').val(),
+                'port' : $('#port').val(),
+                'username' : $('#username').val(),
+                'password' : $('#password').val(),
+                'network' : $('#network').val(),
+                'database' : $('#database').val()
+            }), function(data) {
+                var obj = JSON.parse(data);
+                $('#tables').empty();
+                if (obj["error"] == 0) {
+                    for (let table in obj["data"]) {
+                        $('#tables').append('<option value="'+obj["data"][table]+'">'+obj["data"][table]+'</option>');
+                    }
+                }
+            });
+        });
+        $("#tables").change(function(){
+            $.post('http://127.0.0.1:8151/selectTableLimit',
+            JSON.stringify({
+                'hostname' : $('#hostname').val(),
+                'port' : $('#port').val(),
+                'username' : $('#username').val(),
+                'password' : $('#password').val(),
+                'network' : $('#network').val(),
+                'database' : $('#database').val(),
+                'table' : $("#tables").val(),
+                'num' : "20"
+            }), function(data) {
+                var obj = JSON.parse(data);
+                $('#table_columns').empty();
+                $('#table_lists').empty();
+                if (obj["error"] == 0) {
+                    if (obj["data"].length != 0) {
+                        desc = obj["data"][0];
+                        for(let key in desc){
+                            $('#table_columns').append('<th>'+key+'</th>');
+                        } 
+                    }
+                    for (let column in obj["data"]) {
+                        $('#table_lists').append('<tr id="data_item_'+column+'"></tr>');
+                        for(let key in obj["data"][column]){
+                            $('#data_item_'+column).append('<td>'+obj["data"][column][key]+'</td>');
+                        }
+                    }
+                }
+            });
+        });
+    });
+  </script>
+</head>
+<body>
+   <div class="container ui fluid">
+     <div class="ui grid">
+        <div id="menu" class="ui two wide column left fixed vertical menu">
+        </div>
+        <div class="ui fourteen wide column" id="main">
+            <div class="ui segment">
+                <h2 class="ui left floated header">Mysql</h2>
+                <div class="ui clearing divider"></div>
+                <div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Hostname..." value="rongming-lu.mysql.rds.aliyuncs.com" id="hostname" size="30">
+                        <i class="search icon"><label>host</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Port..." value="3306" id="port" size="5">
+                        <i class="search icon"><label>port</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Username..." value="zhaolu" id="username" size="10">
+                        <i class="search icon"><label>user</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="password" placeholder="Password..." id="password" size="10">
+                        <i class="search icon"><label>pass</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Network..." value="tcp" id="network" size="5">
+                        <i class="search icon"><label>net</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Database..." value="trace" id="database">
+                        <i class="search icon"><label>db</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <select class="ui search dropdown" id="tables">
+                        </select>
+                        <i class="search icon"><label>table</label></i>
+                    </div>
+                    <button class="ui button" id="login">login</button>
+                </div>
+                <table class="ui padded table">
+                    <thead>
+                      <tr id="table_columns">
+                        <th>Name</th>
+                        <th>Status</th>
+                        <th>Notes</th>
+                      </tr>
+                    </thead>
+                    <tbody id="table_lists">
+                      <tr>
+                        <td>John</td>
+                        <td>Approved</td>
+                        <td>He is a very nice guy and I enjoyed talking to him on the telephone. I hope we get to talk again.</td>
+                      </tr>
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+  </div>
+</body>
+</html>
