@@ -13,7 +13,6 @@
         jsonString = $('#x').val();
         var jsonObj = JSON.parse(jsonString);
         $('#x').text(JSON.stringify(jsonObj, null, 4));
-
         url = jsonObj["url"];
         req = jsonObj["req"];
         $.post('http://127.0.0.1:8151/sendHttp', {url : JSON.stringify(url), req: JSON.stringify(req)} , function(data) {
