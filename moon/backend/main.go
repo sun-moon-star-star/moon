@@ -13,6 +13,7 @@ func main() {
     http.HandleFunc("/sendHttp", main_http.SendHttp)
     http.HandleFunc("/loadTables", main_mysql.LoadTables)
     http.HandleFunc("/selectTableLimit", main_mysql.SelectTableLimit)
+    http.HandleFunc("/updateTableField", main_mysql.UpdateTableField)
     err := http.ListenAndServe(":8151", nil)
     if err != nil {
         log.Fatal("ListenAndServe: ", err)

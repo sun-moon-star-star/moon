@@ -38,7 +38,7 @@ func getConnByDesc(db_desc string)(*gorm.DB, error) {
 	return db, nil
 }
 
-func getConn(params map[string]string)(*gorm.DB, error) {
+func getConn(params map[string]interface{})(*gorm.DB, error) {
 	hostname := params["hostname"]
 	port := params["port"]
 	username := params["username"]
@@ -47,13 +47,12 @@ func getConn(params map[string]string)(*gorm.DB, error) {
 	database := params["database"]
 	
 	db_desc := fmt.Sprintf("%v:%v@%v(%v:%v)/%v",username,password,network,hostname,port,database)
-	fmt.Println(db_desc)
 	return getConnByDesc(db_desc)
 }
 
 func LoadTables(writer http.ResponseWriter, request *http.Request) {
 	decoder := json.NewDecoder(request.Body)
-	var params map[string]string
+	var params map[string]interface{}
 	decoder.Decode(&params)
 
 	db, err := getConn(params)
@@ -100,7 +99,7 @@ ret:
 
 func SelectTableLimit(writer http.ResponseWriter, request *http.Request) {
 	decoder := json.NewDecoder(request.Body)
-	var params map[string]string
+	var params map[string]interface{}
 	decoder.Decode(&params)
 
 	db, err := getConn(params)
@@ -110,14 +109,19 @@ func SelectTableLimit(writer http.ResponseWriter, request *http.Request) {
 	if (err != nil) {
 		goto err
 	} else {
-		table := params["table"]
+		table := params["table"].(string)
 		num := params["num"]
 
 		data := GetTableArrayType(table)
 		if data == nil {
 			goto err
 		}
-		db.Table(table).Find(data).Limit(num)
+		res := db.Table(table).Find(data).Limit(num)
+
+		if res.Error != nil {
+			err = res.Error
+			goto err
+		}
 	
 		ret["data"] = data
 		goto end
@@ -140,3 +144,50 @@ ret:
 	fmt.Fprintf(writer, string(ret_bytes))
 }
 
+func UpdateTableField(writer http.ResponseWriter, request *http.Request) {
+	decoder := json.NewDecoder(request.Body)
+	var params map[string]interface{}
+	decoder.Decode(&params)
+
+	db, err := getConn(params)
+	
+	ret := make(map[string]interface{})
+
+	if (err != nil) {
+		goto err
+	} else {
+		table := params["table"].(string)
+		unique_field := params["unique_field"].(string)
+		unique_field_value := params["unique_field_value"]
+		field := params["field"]
+		value := params["value"]
+
+		data := GetTableType(table)
+		if data == nil {
+			goto err
+		}
+
+		res := db.Table(table).Where(unique_field + " = ?", unique_field_value).Update(field, value)
+		if res.Error != nil {
+			err = res.Error
+			goto err
+		}
+		goto end
+	}
+
+err:
+	ret["error"] = -1
+	ret["msg"] = err.Error()
+	goto ret
+end:
+	ret["error"] = 0
+	ret["msg"] = "success"
+ret:
+
+	var ret_bytes []byte
+	ret_bytes, err = json.Marshal(ret)
+	if err != nil {
+		fmt.Fprintf(writer, err.Error())
+	}
+	fmt.Fprintf(writer, string(ret_bytes))
+}

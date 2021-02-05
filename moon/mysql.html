@@ -8,6 +8,7 @@
   <script>
     $(document).ready(function(){
         $('#menu').load("./menu.html");
+        $('#insert').hide();
         $('#login').click(function(){
             $.post('http://127.0.0.1:8151/loadTables',
             JSON.stringify({
@@ -37,27 +38,76 @@
                 'network' : $('#network').val(),
                 'database' : $('#database').val(),
                 'table' : $("#tables").val(),
-                'num' : "20"
+                'num' : 20
             }), function(data) {
                 var obj = JSON.parse(data);
                 $('#table_columns').empty();
                 $('#table_lists').empty();
                 if (obj["error"] == 0) {
+                    unique_field = null;
+                    var fields = new Array();
                     if (obj["data"].length != 0) {
                         desc = obj["data"][0];
                         for(let key in desc){
+                            if (unique_field == null) {
+                                unique_field = key
+                            }
+                            fields.push(key);
                             $('#table_columns').append('<th>'+key+'</th>');
                         } 
+                        $('#insert').show();
                     }
                     for (let column in obj["data"]) {
-                        $('#table_lists').append('<tr id="data_item_'+column+'"></tr>');
+                        $('#table_lists').prepend('<tr id="data_item_'+column+'"></tr>');
                         for(let key in obj["data"][column]){
-                            $('#data_item_'+column).append('<td>'+obj["data"][column][key]+'</td>');
+                            $('#data_item_'+column).append('<td id="data_item_'+column+'_'+key+'" contentEditable="false" unique_field="'+unique_field+'" unique_field_value='+obj["data"][column][unique_field]+' class="field_item" field="'+key+'">'+obj["data"][column][key]+'</td>');
                         }
                     }
+                    $('#insert').click(function(){
+                        $('#table_lists').prepend('<tr id="data_item_pending" class="warning"></tr>');
+                        for(let key in fields){
+                            $('#data_item_pending').append('<td id="data_item_pending_'+key+'" contentEditable="true" unique_field="'+unique_field+'" unique_field_value="" class="field_item" field="'+key+'"></td>');
+                        }
+                        $('#data_item_pending').append('<td><span><button class="ui primary button" id="login">save</button></span></td>');
+                    });
+                    $(".field_item").dblclick(function(){
+                        contentEditable = $(this).attr('contentEditable');
+                        if (contentEditable=='false') {
+                            $(this).attr('contentEditable', true);
+                            $(this).addClass("active");
+                            $(this).removeClass("error");
+                        } else {
+                            $(this).attr('contentEditable', false);
+                            $(this).removeClass("active");
+                            unique_field = $(this).attr('unique_field');
+                            unique_field_value = $(this).attr('unique_field_value');
+                            field = $(this).attr('field');
+                            value = $(this).text();
+                            item_id = $(this).attr('id');
+                            $.post('http://127.0.0.1:8151/updateTableField',
+                            JSON.stringify({
+                                'hostname' : $('#hostname').val(),
+                                'port' : $('#port').val(),
+                                'username' : $('#username').val(),
+                                'password' : $('#password').val(),
+                                'network' : $('#network').val(),
+                                'database' : $('#database').val(),
+                                'table' : $("#tables").val(),
+                                'unique_field' : unique_field,
+                                'unique_field_value' : unique_field_value,
+                                'field' : field,
+                                'value' : value
+                            }), function(data) {
+                                var obj = JSON.parse(data);
+                                if (obj["error"] != 0) {
+                                    $("#"+item_id).addClass("error");
+                                }
+                            });
+                        }
+                    });
                 }
             });
-        });
+        });    
     });
   </script>
 </head>
@@ -101,21 +151,12 @@
                         <i class="search icon"><label>table</label></i>
                     </div>
                     <button class="ui button" id="login">login</button>
+                    <button class="ui button" id="insert">insert</button>
                 </div>
                 <table class="ui padded table">
-                    <thead>
-                      <tr id="table_columns">
-                        <th>Name</th>
-                        <th>Status</th>
-                        <th>Notes</th>
-                      </tr>
+                    <thead id="table_columns">
                     </thead>
                     <tbody id="table_lists">
-                      <tr>
-                        <td>John</td>
-                        <td>Approved</td>
-                        <td>He is a very nice guy and I enjoyed talking to him on the telephone. I hope we get to talk again.</td>
-                      </tr>
                     </tbody>
                   </table>
             </div>
