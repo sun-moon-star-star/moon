@@ -9,7 +9,7 @@
     $(document).ready(function(){
       $('#x').load("./data/http/default.json");
       $('#menu').load("./menu.html");
-      $('#x').dblclick(function(){
+      $('#send').click(function(){
         jsonString = $('#x').val();
         var jsonObj = JSON.parse(jsonString);
         $('#x').text(JSON.stringify(jsonObj, null, 4));
@@ -35,7 +35,8 @@
             <div class="ui eight wide column">
               <div class="ui form container">
                 <div class="field">
-                  <label>Request</label>
+                  <label>Request <label id="send" style="float:right;border: 1px solid rgba(34, 36, 38, 0.15);cursor:pointer;">send</label></label>
+                  
                   <textarea id="x" rows="40"></textarea>
                 </div>
               </div>
