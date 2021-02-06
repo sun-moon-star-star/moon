@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../dist/css/semantic.css">
+  <link rel="stylesheet" href="../dist/css/fontawesome.css">
+  <script src="../dist/js/jquery.js"></script>
+  <title>rongming</title>
+  <script>
+    $(document).ready(function(){
+        $('#menu').load("./menu.html");
+        notes = $.get("./data/note/meta/",function(data){
+            len = $(data).children("a").length;
+            $url = $(data).children("a:first-child");
+            idx = 1;
+            num = 2;
+            for (i = 0; i < len; i++, $url = $url.next()) { 
+                var file = new Object();
+                file = $url.text();
+                if (++idx == num) {
+                    idx = 0;
+                }
+                $.ajax({
+                    url: "./data/note/meta/"+file,//ÇëÇóÂ·¾¶
+                    type: "GET",//GET,
+                    async: false,
+                    success: function(obj) {
+                       $("#main"+idx).append('<div class="ui cards"><div class="ui fluid card"><div class="content" id="'+obj['id']+'"></div></div></div>');
+                       $("#"+obj['id']).append('<div class="header" id="title_'+obj['id']+'">'+obj['title']+'</div>');
+                       $("#"+obj['id']).append('<div class="ui clearing divider"></div>');
+                       $("#"+obj['id']).append('<div class="description" id="desc_'+obj['id']+'">'+obj['desc']+'</div>');
+                       $("#"+obj['id']).parent().append('<div class="extra content right floated" id="meta_'+obj['id']+'">'+obj['meta']+'<a class="right floated star">More</a></div>');
+                    }
+                });
+            }
+        });
+    });
+  </script>
+</head>
+<body>
+   <div class="container ui fluid">
+     <div class="ui grid">
+        <div id="menu" class="ui two wide column left fixed vertical menu">
+        </div>
+        <div class="ui fourteen wide column segment">
+            <h2 class="ui left floated header">Note</h2>
+            <div class="ui clearing divider"></div>
+            <div class="ui grid">
+                <div class="ui eight wide column" id="main0" style="padding-left:30px;padding-top:30px;">            
+                </div>
+                <div class="ui eight wide column" id="main1" style="padding-right:40px;padding-top:30px;">            
+                </div>
+                
+            </div>
+        </div>
+    </div>
+  </div>
+</body>
+</html>

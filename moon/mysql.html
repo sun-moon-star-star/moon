@@ -7,8 +7,10 @@
   <title>rongming</title>
   <script>
     $(document).ready(function(){
+        var fields = new Object();
         $('#menu').load("./menu.html");
         $('#insert').hide();
+        $('#save').hide();
         $('#login').click(function(){
             $.post('http://127.0.0.1:8151/loadTables',
             JSON.stringify({
@@ -43,16 +45,17 @@
                 var obj = JSON.parse(data);
                 $('#table_columns').empty();
                 $('#table_lists').empty();
+                $('#save').hide();
                 if (obj["error"] == 0) {
-                    unique_field = null;
-                    var fields = new Array();
+                    fields[$("#tables").val()] = new Array();
                     if (obj["data"].length != 0) {
                         desc = obj["data"][0];
+                        unique_field = null;
                         for(let key in desc){
                             if (unique_field == null) {
                                 unique_field = key
                             }
-                            fields.push(key);
+                            fields[$("#tables").val()].push(key);
                             $('#table_columns').append('<th>'+key+'</th>');
                         } 
                         $('#insert').show();
@@ -64,11 +67,13 @@
                         }
                     }
                     $('#insert').click(function(){
-                        $('#table_lists').prepend('<tr id="data_item_pending" class="warning"></tr>');
-                        for(let key in fields){
-                            $('#data_item_pending').append('<td id="data_item_pending_'+key+'" contentEditable="true" unique_field="'+unique_field+'" unique_field_value="" class="field_item" field="'+key+'"></td>');
+                        $('#save').show();
+                        if ($('#data_item_pending').length == 0) {
+                            $('#table_lists').prepend('<tr id="data_item_pending" class="warning"></tr>');
+                            for(let key in fields[$("#tables").val()]){
+                                $('#data_item_pending').append('<td id="data_item_pending_'+key+'" contentEditable="true" unique_field="'+unique_field+'" unique_field_value="" class="field_item" field="'+key+'"></td>');
+                            }
                         }
-                        $('#data_item_pending').append('<td><span><button class="ui primary button" id="login">save</button></span></td>');
                     });
                     $(".field_item").dblclick(function(){
                         contentEditable = $(this).attr('contentEditable');
@@ -138,11 +143,11 @@
                         <i class="search icon"><label>pass</label></i>
                     </div>
                     <div class="ui small icon input">
-                        <input type="text" placeholder="Network..." value="tcp" id="network" size="5">
+                        <input type="text" placeholder="Network..." value="tcp" id="network" size="3">
                         <i class="search icon"><label>net</label></i>
                     </div>
                     <div class="ui small icon input">
-                        <input type="text" placeholder="Database..." value="trace" id="database">
+                        <input type="text" placeholder="Database..." value="trace" id="database" size="5">
                         <i class="search icon"><label>db</label></i>
                     </div>
                     <div class="ui small icon input">
@@ -152,6 +157,7 @@
                     </div>
                     <button class="ui button" id="login">login</button>
                     <button class="ui button" id="insert">insert</button>
+                    <button class="ui button" id="save">save</button>
                 </div>
                 <table class="ui padded table">
                     <thead id="table_columns">

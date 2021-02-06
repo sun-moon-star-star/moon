@@ -8,6 +8,7 @@
   <script>
     $(document).ready(function(){
         $('#menu').load("./menu.html");
+        $('#response').parent().hide();
         $('#save').click(function(){
             $.post('http://127.0.0.1:8151/savePaste',
             JSON.stringify({
@@ -16,6 +17,7 @@
             }), function(data) {
                 $('#response').text(data);
             });
+            $('#response').parent().show();
         });
         $('#load').click(function(){
             $.post('http://127.0.0.1:8151/loadPaste',
@@ -25,13 +27,14 @@
                 var obj = JSON.parse(data);
                 if (obj["error"] == 0) {
                     text = obj["text"];
-                    $('#text').text(text);
+                    $('#text').val(text);
                     delete obj["text"];
                     $('#response').text(JSON.stringify(obj));
                 } else {
                     $('#response').text(data);
                 }
             });
+            $('#response').parent().show();
         });
     });
   </script>
@@ -50,7 +53,7 @@
                 <button class="ui button" id="load">load</button>
                 <button class="ui button" id="save">save</button>
             </div>
-            <div class="ui field visible message">
+            <div type="text" class="ui field message">
                 <p id="response"></p>
             </div>
             <div class="field">
