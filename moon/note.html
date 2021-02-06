@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="../dist/css/semantic.css">
-  <link rel="stylesheet" href="../dist/css/fontawesome.css">
+  <link rel="stylesheet" href="../dist/css/animate.css">
   <script src="../dist/js/jquery.js"></script>
   <title>rongming</title>
   <script>
@@ -14,22 +14,29 @@
             $url = $(data).children("a:first-child");
             idx = 1;
             num = 2;
+            timeout = 0;
             for (i = 0; i < len; i++, $url = $url.next()) { 
                 var file = new Object();
                 file = $url.text();
-                if (++idx == num) {
-                    idx = 0;
-                }
                 $.ajax({
                     url: "./data/note/meta/"+file,//ÇëÇóÂ·¾¶
                     type: "GET",//GET,
                     async: false,
                     success: function(obj) {
-                       $("#main"+idx).append('<div class="ui cards"><div class="ui fluid card"><div class="content" id="'+obj['id']+'"></div></div></div>');
-                       $("#"+obj['id']).append('<div class="header" id="title_'+obj['id']+'">'+obj['title']+'</div>');
-                       $("#"+obj['id']).append('<div class="ui clearing divider"></div>');
-                       $("#"+obj['id']).append('<div class="description" id="desc_'+obj['id']+'">'+obj['desc']+'</div>');
-                       $("#"+obj['id']).parent().append('<div class="extra content right floated" id="meta_'+obj['id']+'">'+obj['meta']+'<a class="right floated star">More</a></div>');
+                        if (++idx == num) {
+                            idx = 0;
+                        }
+                        $("#main"+idx).append('<div class="ui cards"><div class="ui fluid card"><div class="content" id="'+obj['id']+'"></div></div></div>');
+                        $("#"+obj['id']).append('<div class="header" id="title_'+obj['id']+'">'+obj['title']+'</div>');
+                        $("#"+obj['id']).append('<div class="ui clearing divider"></div>');
+                        $("#"+obj['id']).append('<div class="description" id="desc_'+obj['id']+'">'+obj['desc']+'</div>');
+                        $("#"+obj['id']).parent().append('<div class="extra content right floated" id="meta_'+obj['id']+'">'+obj['meta']+'<a class="right floated star">More</a></div>');   
+                        $("#"+obj['id']).parent().parent().hide();
+                        setTimeout(function(){
+                            $("#"+obj['id']).parent().parent().show();
+                            $("#"+obj['id']).parent().parent().addClass('animate__animated animate__pulse');
+                        }, timeout);
+                        timeout += 100;
                     }
                 });
             }
