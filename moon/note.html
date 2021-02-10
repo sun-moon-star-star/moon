@@ -4,9 +4,29 @@
   <meta charset="utf-8">
   <link rel="stylesheet" href="../dist/css/semantic.css">
   <link rel="stylesheet" href="../dist/css/animate.css">
-  <script src="../dist/js/jquery.js"></script>
   <title>rongming</title>
-  <script>
+</head>
+<body>
+   <div class="container ui fluid">
+     <div class="ui grid">
+        <div id="menu" class="ui two wide column left fixed vertical menu">
+        </div>
+        <div class="ui fourteen wide column segment">
+            <h2 class="ui left floated header">Note</h2>
+            <div class="ui clearing divider"></div>
+            <div class="ui grid" >
+                <div class="ui eight wide column" id="main0" style="padding-left:30px;padding-top:30px;">            
+                </div>
+                <div class="ui eight wide column" id="main1" style="padding-right:40px;padding-top:30px;">            
+                </div>
+                
+            </div>
+        </div>
+    </div>
+  </div>
+</body>
+<script src="../dist/js/jquery.js"></script>
+<script>
     $(document).ready(function(){
         $('#menu').load("./menu.html");
         notes = $.get("./data/note/meta/",function(data){
@@ -19,7 +39,7 @@
                 var file = new Object();
                 file = $url.text();
                 $.ajax({
-                    url: "./data/note/meta/"+file,//ÇëÇóÂ·¾¶
+                    url: "./data/note/meta/"+file,//ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
                     type: "GET",//GET,
                     async: false,
                     success: function(obj) {
@@ -42,25 +62,5 @@
             }
         });
     });
-  </script>
-</head>
-<body>
-   <div class="container ui fluid">
-     <div class="ui grid">
-        <div id="menu" class="ui two wide column left fixed vertical menu">
-        </div>
-        <div class="ui fourteen wide column segment">
-            <h2 class="ui left floated header">Note</h2>
-            <div class="ui clearing divider"></div>
-            <div class="ui grid" >
-                <div class="ui eight wide column" id="main0" style="padding-left:30px;padding-top:30px;">            
-                </div>
-                <div class="ui eight wide column" id="main1" style="padding-right:40px;padding-top:30px;">            
-                </div>
-                
-            </div>
-        </div>
-    </div>
-  </div>
-</body>
+</script>
 </html>

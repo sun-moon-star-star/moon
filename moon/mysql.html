@@ -3,9 +3,64 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="../dist/css/semantic.css">
-  <script src="../dist/js/jquery.js"></script>
   <title>rongming</title>
-  <script>
+</head>
+<body>
+   <div class="container ui fluid">
+     <div class="ui grid">
+        <div id="menu" class="ui two wide column left fixed vertical menu">
+        </div>
+        <div class="ui fourteen wide column segment" id="main">
+            <div class="ui">
+                <h2 class="ui left floated header">Mysql</h2>
+                <div class="ui clearing divider"></div>
+                <div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Hostname..." value="rongming-lu.mysql.rds.aliyuncs.com" id="hostname" size="30">
+                        <i class="search icon"><label>host</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Port..." value="3306" id="port" size="5">
+                        <i class="search icon"><label>port</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Username..." value="zhaolu" id="username" size="10">
+                        <i class="search icon"><label>user</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="password" placeholder="Password..." id="password" size="10">
+                        <i class="search icon"><label>pass</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Network..." value="tcp" id="network" size="3">
+                        <i class="search icon"><label>net</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <input type="text" placeholder="Database..." value="trace" id="database" size="5">
+                        <i class="search icon"><label>db</label></i>
+                    </div>
+                    <div class="ui small icon input">
+                        <select class="ui search dropdown" id="tables">
+                        </select>
+                        <i class="search icon"><label>table</label></i>
+                    </div>
+                    <button class="ui button" id="login">login</button>
+                    <button class="ui button" id="insert">insert</button>
+                    <button class="ui button" id="save">save</button>
+                </div>
+                <table class="ui padded table">
+                    <thead id="table_columns">
+                    </thead>
+                    <tbody id="table_lists">
+                    </tbody>
+                  </table>
+            </div>
+        </div>
+    </div>
+  </div>
+</body>
+<script src="../dist/js/jquery.js"></script>
+<script>
     $(document).ready(function(){
         var fields = new Object();
         $('#menu').load("./menu.html");
@@ -114,60 +169,5 @@
             });
         });    
     });
-  </script>
-</head>
-<body>
-   <div class="container ui fluid">
-     <div class="ui grid">
-        <div id="menu" class="ui two wide column left fixed vertical menu">
-        </div>
-        <div class="ui fourteen wide column segment" id="main">
-            <div class="ui">
-                <h2 class="ui left floated header">Mysql</h2>
-                <div class="ui clearing divider"></div>
-                <div>
-                    <div class="ui small icon input">
-                        <input type="text" placeholder="Hostname..." value="rongming-lu.mysql.rds.aliyuncs.com" id="hostname" size="30">
-                        <i class="search icon"><label>host</label></i>
-                    </div>
-                    <div class="ui small icon input">
-                        <input type="text" placeholder="Port..." value="3306" id="port" size="5">
-                        <i class="search icon"><label>port</label></i>
-                    </div>
-                    <div class="ui small icon input">
-                        <input type="text" placeholder="Username..." value="zhaolu" id="username" size="10">
-                        <i class="search icon"><label>user</label></i>
-                    </div>
-                    <div class="ui small icon input">
-                        <input type="password" placeholder="Password..." id="password" size="10">
-                        <i class="search icon"><label>pass</label></i>
-                    </div>
-                    <div class="ui small icon input">
-                        <input type="text" placeholder="Network..." value="tcp" id="network" size="3">
-                        <i class="search icon"><label>net</label></i>
-                    </div>
-                    <div class="ui small icon input">
-                        <input type="text" placeholder="Database..." value="trace" id="database" size="5">
-                        <i class="search icon"><label>db</label></i>
-                    </div>
-                    <div class="ui small icon input">
-                        <select class="ui search dropdown" id="tables">
-                        </select>
-                        <i class="search icon"><label>table</label></i>
-                    </div>
-                    <button class="ui button" id="login">login</button>
-                    <button class="ui button" id="insert">insert</button>
-                    <button class="ui button" id="save">save</button>
-                </div>
-                <table class="ui padded table">
-                    <thead id="table_columns">
-                    </thead>
-                    <tbody id="table_lists">
-                    </tbody>
-                  </table>
-            </div>
-        </div>
-    </div>
-  </div>
-</body>
+</script>
 </html>

@@ -3,9 +3,35 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="../dist/css/semantic.css">
-  <script src="../dist/js/jquery.js"></script>
   <title>rongming</title>
-  <script>
+</head>
+<body>
+   <div class="container ui fluid">
+     <div class="ui grid">
+        <div id="menu" class="ui two wide column left fixed vertical menu">
+        </div>
+        <div class="ui fourteen wide column segment">
+          <h2 class="ui left floated header">Paste</h2>
+          <div class="ui clearing divider"></div>
+          <div class="ui form">
+            <div class="ui icon input field">
+                <input type="text" placeholder="Token..." size="30" id="token">
+                <button class="ui button" id="load">load</button>
+                <button class="ui button" id="save">save</button>
+            </div>
+            <div type="text" class="ui field message">
+                <p id="response"></p>
+            </div>
+            <div class="field">
+                <textarea id="text" rows="100"></textarea>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</body>
+<script src="../dist/js/jquery.js"></script>
+<script>
     $(document).ready(function(){
         $('#menu').load("./menu.html");
         $('#response').parent().hide();
@@ -37,31 +63,5 @@
             $('#response').parent().show();
         });
     });
-  </script>
-</head>
-<body>
-   <div class="container ui fluid">
-     <div class="ui grid">
-        <div id="menu" class="ui two wide column left fixed vertical menu">
-        </div>
-        <div class="ui fourteen wide column segment">
-          <h2 class="ui left floated header">Paste</h2>
-          <div class="ui clearing divider"></div>
-          <div class="ui form">
-            <div class="ui icon input field">
-                <input type="text" placeholder="Token..." size="30" id="token">
-                <button class="ui button" id="load">load</button>
-                <button class="ui button" id="save">save</button>
-            </div>
-            <div type="text" class="ui field message">
-                <p id="response"></p>
-            </div>
-            <div class="field">
-                <textarea id="text" rows="100"></textarea>
-            </div>
-          </div>
-        </div>
-    </div>
-  </div>
-</body>
+</script>
 </html>

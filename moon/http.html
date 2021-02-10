@@ -3,25 +3,7 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="../dist/css/semantic.css">
-  <script src="../dist/js/jquery.js"></script>
   <title>rongming</title>
-  <script>
-    $(document).ready(function(){
-      $('#x').load("./data/http/default.json");
-      $('#menu').load("./menu.html");
-      $('#send').click(function(){
-        jsonString = $('#x').val();
-        var jsonObj = JSON.parse(jsonString);
-        $('#x').text(JSON.stringify(jsonObj, null, 4));
-        url = jsonObj["url"];
-        req = jsonObj["req"];
-        $.post('http://127.0.0.1:8151/sendHttp', {url : JSON.stringify(url), req: JSON.stringify(req)} , function(data) {
-          var jsonObj = JSON.parse(data);
-          $("#y").text(JSON.stringify(jsonObj, null, 4));
-        });
-      });
-    });
-  </script>
 </head>
 <body>
    <div class="container ui fluid">
@@ -54,4 +36,22 @@
     </div>
   </div>
 </body>
+<script src="../dist/js/jquery.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#x').load("./data/http/default.json");
+    $('#menu').load("./menu.html");
+    $('#send').click(function(){
+      jsonString = $('#x').val();
+      var jsonObj = JSON.parse(jsonString);
+      $('#x').text(JSON.stringify(jsonObj, null, 4));
+      url = jsonObj["url"];
+      req = jsonObj["req"];
+      $.post('http://127.0.0.1:8151/sendHttp', {url : JSON.stringify(url), req: JSON.stringify(req)} , function(data) {
+        var jsonObj = JSON.parse(data);
+        $("#y").text(JSON.stringify(jsonObj, null, 4));
+      });
+    });
+  });
+</script>
 </html>
