@@ -14,12 +14,13 @@
         <div class="ui fourteen wide column segment">
             <h2 class="ui left floated header">Note</h2>
             <div class="ui clearing divider"></div>
-            <div class="ui grid" >
+            <div class="ui grid" id="note">
                 <div class="ui eight wide column" id="main0" style="padding-left:30px;padding-top:30px;">            
                 </div>
                 <div class="ui eight wide column" id="main1" style="padding-right:40px;padding-top:30px;">            
                 </div>
-                
+            </div>
+            <div id="note_detail" style="padding: 10px 20px 0px 10px;">
             </div>
         </div>
     </div>
@@ -29,6 +30,22 @@
 <script>
     $(document).ready(function(){
         $('#menu').load("./menu.html");
+        $('#note').hide();
+        $('#note_detail').show();
+        $.ajax({
+            url: "./data/note/content/2018122001.json",
+            type: "GET",
+            async: false,
+            success: function(obj) {
+                $("#note_detail").html("");
+                $("#note_detail").append('<article class="article" id="note_detail_'+obj['id']+'"></article>');
+                $("#note_detail_"+obj['id']).append('<h2>'+obj['title']+'</h2><label>'+obj['meta']+'</label>');
+                len = obj['content'].length;
+                for (i = 0; i < len; i++) {
+                    $("#note_detail_"+obj['id']).append('<p>'+obj['content'][i]+'</p>');
+                }
+            }
+        });
         notes = $.get("./data/note/meta/",function(data){
             len = $(data).children("a").length;
             $url = $(data).children("a:first-child");
