@@ -16,6 +16,7 @@ func main() {
     http.HandleFunc("/loadTables", main_mysql.LoadTables)
     http.HandleFunc("/selectTableLimit", main_mysql.SelectTableLimit)
     http.HandleFunc("/updateTableField", main_mysql.UpdateTableField)
+    http.HandleFunc("/insertTable", main_mysql.InsertTable)
     http.HandleFunc("/savePaste", main_text.SavePaste)
     http.HandleFunc("/loadPaste", main_text.LoadPaste)
     err := http.ListenAndServe(":8151", nil)

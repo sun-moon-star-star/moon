@@ -192,3 +192,54 @@ ret:
 	}
 	fmt.Fprintf(writer, string(ret_bytes))
 }
+
+func InsertTable(writer http.ResponseWriter, request *http.Request) {
+	decoder := json.NewDecoder(request.Body)
+	var params map[string]interface{}
+	decoder.Decode(&params)
+
+	db, err := getConn(params)
+	
+	ret := make(map[string]interface{})
+
+	if (err != nil) {
+		goto err
+	} else {
+		database := params["database"].(string)
+		table := params["table"].(string)
+		object_jsonstr := params["object_jsonstr"].(string) // json string
+
+		data := GetTableType(database + "_" + table)
+		if data == nil {
+			goto err
+		}
+
+		err = json.Unmarshal([]byte(object_jsonstr), data)
+
+		res := db.Table(table).Create(data)
+
+		if res.Error != nil {
+			err = res.Error
+			goto err
+		}
+	
+		ret["data"] = res
+		goto end
+	}
+
+err:
+	ret["error"] = -1
+	ret["msg"] = err.Error()
+	goto ret
+end:
+	ret["error"] = 0
+	ret["msg"] = "success"
+ret:
+
+	var ret_bytes []byte
+	ret_bytes, err = json.Marshal(ret)
+	if err != nil {
+		fmt.Fprintf(writer, err.Error())
+	}
+	fmt.Fprintf(writer, string(ret_bytes))
+}

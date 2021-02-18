@@ -3,55 +3,148 @@
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="../dist/css/semantic.css">
+  <link rel="stylesheet" href="../dist/css/animate.css">
   <title>rongming</title>
 </head>
 <body>
-   <div class="container ui fluid">
-     <div class="ui grid">
-        <div id="menu" class="ui two wide column left fixed vertical menu">
-        </div>
-        <div class="ui fourteen wide column segment">
-          <h2 class="ui left floated header">Log</h2>
-          <div class="ui clearing divider"></div>
-          <div class="ui cards" >
-            <div class="card">
-              <div class="content">
-                <div class="meta">2020 01 02 ... 2020 01 02</div>
-                <div class="description">
-                    你是什么光
+    <input type=”hidden” name="hostname" id="hostname">
+    <input type=”hidden” name="port" id="port">
+    <input type=”hidden” name="username" id="username">
+    <input type=”hidden” name="password" id="password">
+    <input type=”hidden” name="network" id="network">
+    <input type=”hidden” name="database" id="database">
+    <input type=”hidden” name="table" id="table">
+    <div class="container ui fluid">
+        <div class="ui grid">
+            <div id="menu" class="ui two wide column left fixed vertical menu"></div>
+            <div class="ui fourteen wide column segment">
+                <h2 class="ui left floated header">Log</h2>
+                <div class="ui clearing divider"></div>
+                <div class="ui grid" id="log" style="padding-right:15px;">
+                    <form class="ui reply form sixteen wide column">
+                        <div class="field">
+                          <textarea rows="3" id="content"></textarea>
+                        </div>
+                        <div class="ui primary submit icon button right floated" id="submit">
+                            Submit
+                        </div>
+                    </form>
+                    <div class="ui cards" id="cards">
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
     </div>
-  </div>
 </body>
 <script src="../dist/js/jquery.js"></script>
 <script>
-  $(document).ready(function(){
-    $('#menu').load("./menu.html");
-    $.post('http://127.0.0.1:8151/selectTableLimit',
-        JSON.stringify({
-            'hostname' : $('#hostname').val(),
-            'port' : $('#port').val(),
-            'username' : $('#username').val(),
-            'password' : $('#password').val(),
-            'network' : $('#network').val(),
-            'database' : "log",
-            'table' : "log",
-            'num' : 20
-        }), function(data) {
-            var obj = JSON.parse(data);
-            $('#table_columns').empty();
-            $('#table_lists').empty();
-            $('#save').hide();
-            if (obj["error"] == 0) {
-                fields[$("#tables").val()] = new Array();
-                if (obj["data"].length != 0) {
-                }
+    Date.prototype.Format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份 
+            "d+": this.getDate(), //日 
+            "H+": this.getHours(), //小时 
+            "m+": this.getMinutes(), //分 
+            "s+": this.getSeconds(), //秒 
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度 
+            "S+": this.getMilliseconds() //毫秒 
+        };
+        var prefix_zero = {
+            "M+": 2, //月份 
+            "d+": 2, //日
+            "H+": 2, //小时 
+            "m+": 2, //分 
+            "s+": 2, //秒 
+            "q+": 2, //季度 
+            "S+": 3, //毫秒 
+        };
+        if (/(y+)/.test(fmt)) fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        for (var k in o)
+        if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("000" + o[k]).substr(-prefix_zero[k])));
+        return fmt;
+    }
+
+    function hideConfig() {
+        $('#hostname').hide();
+        $('#port').hide();
+        $('#username').hide();
+        $('#password').hide();
+        $('#network').hide();
+        $('#database').hide();
+        $('#table').hide();
+    }
+
+    function loadConfig() {
+        $.ajax({
+            url: "./conf/mysql.json",
+            type: "GET",
+            async: false,
+            success: function(obj) {
+                $('#hostname').val(obj['hostname']);
+                $('#port').val(obj['port']);
+                $('#username').val(obj['username']);
+                $('#password').val(obj['password']);
+                $('#network').val(obj['network']);
+                $('#database').val(obj['database']);
+                $('#table').val(obj['table']);
             }
         });
-  });
+    }
+
+    function initLog() {
+        $.post('http://127.0.0.1:8151/selectTableLimit',
+            JSON.stringify({
+                'hostname' : $('#hostname').val(),
+                'port' : $('#port').val(),
+                'username' : $('#username').val(),
+                'password' : $('#password').val(),
+                'network' : $('#network').val(),
+                'database' : $('#database').val(),
+                'table' : $('#table').val(),
+                'num' : 20
+            }), function(data) {
+                var obj = JSON.parse(data);
+                $('#cards').empty();
+                if (obj["error"] == 0) {
+                    if (obj["data"].length != 0) {
+                        for (let column in obj["data"]) {
+                            $('#cards').append('<div class="card"><div class="content" id="'+obj["data"][column]['id']+'"></div></div>');
+                            $('#'+obj["data"][column]['id']).append('<div class="meta">'+obj["data"][column]['update_time'].substring(0,19)+'</div>');
+                            $('#'+obj["data"][column]['id']).append('<div class="description">'+obj["data"][column]['content']+'</div>');
+                            $("#"+obj["data"][column]['id']).parent().addClass('animate__animated animate__pulse');
+                        }
+                    }
+                }
+            });
+    }
+    $(document).ready(function(){
+        $('#menu').load("./menu.html");
+        hideConfig();
+        loadConfig();
+        initLog();
+        $("#submit").click(function(){
+            datestr = new Date().Format("yyyy-MM-dd HH:mm:ss.S");
+            $.post('http://127.0.0.1:8151/insertTable',
+            JSON.stringify({
+                'hostname' : $('#hostname').val(),
+                'port' : $('#port').val(),
+                'username' : $('#username').val(),
+                'password' : $('#password').val(),
+                'network' : $('#network').val(),
+                'database' : $('#database').val(),
+                'table' : $('#table').val(),
+                'object_jsonstr' : JSON.stringify({
+                    'content' : $('#content').val(),
+                    'create_time': datestr,
+                    'update_time': datestr
+                })
+            }), function(data) {
+                $("#content").val('');
+                var obj = JSON.parse(data);
+                $('#cards').append('<div class="card"><div class="content" id="'+obj["data"]["Value"]['id']+'"></div></div>');
+                $('#'+obj["data"]["Value"]['id']).append('<div class="meta">'+obj["data"]["Value"]['update_time'].substring(0,19)+'</div>');
+                $('#'+obj["data"]["Value"]['id']).append('<div class="description">'+obj["data"]["Value"]['content']+'</div>');
+            });
+        });
+    });
 </script>
 </html>

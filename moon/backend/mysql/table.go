@@ -49,6 +49,6 @@ type TraceBaggage struct {
 type LogLog struct {
 	Id uint64 `json:"id" gorm:"type:int(11) unsigned not null primaryKey autoIncrement;"`
 	Content string `json:"content" gorm:"varchar(16384) not null"`
-	CreateTime string `json:"create_time" gorm:"datetime(3) not null"`
-	UpdateTime string `json:"update_time" gorm:"datetime(3) not null"`
+	CreateTime string `json:"create_time" gorm:"datetime(3) not null DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)"`
+	UpdateTime string `json:"update_time" gorm:"datetime(3) not null DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3)"`
 }
