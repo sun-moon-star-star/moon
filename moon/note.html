@@ -30,22 +30,7 @@
 <script>
     $(document).ready(function(){
         $('#menu').load("./menu.html");
-        $('#note').hide();
-        $('#note_detail').show();
-        $.ajax({
-            url: "./data/note/content/2018122001.json",
-            type: "GET",
-            async: false,
-            success: function(obj) {
-                $("#note_detail").html("");
-                $("#note_detail").append('<article class="article" id="note_detail_'+obj['id']+'"></article>');
-                $("#note_detail_"+obj['id']).append('<h2>'+obj['title']+'</h2><label>'+obj['meta']+'</label>');
-                len = obj['content'].length;
-                for (i = 0; i < len; i++) {
-                    $("#note_detail_"+obj['id']).append('<p>'+obj['content'][i]+'</p>');
-                }
-            }
-        });
+        $('#note_detail').hide();
         notes = $.get("./data/note/meta/",function(data){
             len = $(data).children("a").length;
             $url = $(data).children("a:first-child");
@@ -67,12 +52,47 @@
                         $("#"+obj['id']).append('<div class="header" id="title_'+obj['id']+'">'+obj['title']+'</div>');
                         $("#"+obj['id']).append('<div class="ui clearing divider"></div>');
                         $("#"+obj['id']).append('<div class="description" id="desc_'+obj['id']+'">'+obj['desc']+'</div>');
-                        $("#"+obj['id']).parent().append('<div class="extra content right floated" id="meta_'+obj['id']+'">'+obj['meta']+'<a class="right floated star">More</a></div>');   
+                        $("#"+obj['id']).parent().append('<div class="extra content right floated" id="meta_'+obj['id']+'">'+obj['meta']+'<a class="right floated star" id="more_'+obj['id']+'">More</a></div>');   
+                        $("#more_"+obj['id']).click(function(){
+                            $("#note").hide();
+                            $("#note_detail").show();
+                            $.ajax({
+                                url: './data/note/content/'+obj['id']+'.json',
+                                type: "GET",
+                                async: false,
+                                success: function(obj) {
+                                    $("#note_detail").html("");
+                                    $("#note_detail").append('<article class="article" id="note_detail_'+obj['id']+'"><a class="left floated star" style="cursor:pointer" id="back">Back</a></article>');
+                                    $("#note_detail_"+obj['id']).append('<h2>'+obj['title']+'</h2><label>'+obj['meta']+'</label>');
+                                    len = obj['content'].length;
+                                    $("#note_detail").addClass('animate__animated animate__fadeIn');
+                                    for (i = 0; i < len; i++) {
+                                        $("#note_detail_"+obj['id']).append('<p>'+obj['content'][i]+'</p>');
+                                    }
+                                    $("#back").click(function(){
+                                        $("#note_detail").hide();
+                                        $("#note").show();
+                                    });
+                                },
+                                error: function(obj) {
+                                    $("#note_detail").html("");
+                                    $("#note_detail").append('<article class="article" id="note_detail_'+obj['id']+'"><a class="left floated star" style="cursor:pointer" id="back">Back</a></article>');
+                                    $("#note_detail_"+obj['id']).append('<p>'+JSON.stringify(obj, null, 4)+'</p>');
+                                    $("#back").click(function(){
+                                        $("#note_detail").hide();
+                                        $("#note").show();
+                                    });
+                                }
+                            });
+                        });
                         $("#"+obj['id']).parent().parent().hide();
                         setTimeout(function(){
                             $("#"+obj['id']).parent().parent().show();
                             $("#"+obj['id']).parent().parent().addClass('animate__animated animate__pulse');
                         }, timeout);
+                        setTimeout(function(){
+                            $("#"+obj['id']).parent().parent().removeClass('animate__animated animate__pulse');
+                        }, timeout + 1000);
                         timeout += 100;
                     }
                 });
