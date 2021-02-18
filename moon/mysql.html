@@ -61,32 +61,24 @@
 </body>
 <script src="../dist/js/jquery.js"></script>
 <script>
-    $(document).ready(function(){
-        var fields = new Object();
-        $('#menu').load("./menu.html");
-        $('#insert').hide();
-        $('#save').hide();
-        $('#login').click(function(){
-            $.post('http://127.0.0.1:8151/loadTables',
-            JSON.stringify({
-                'hostname' : $('#hostname').val(),
-                'port' : $('#port').val(),
-                'username' : $('#username').val(),
-                'password' : $('#password').val(),
-                'network' : $('#network').val(),
-                'database' : $('#database').val()
-            }), function(data) {
-                var obj = JSON.parse(data);
-                $('#tables').empty();
-                if (obj["error"] == 0) {
-                    for (let table in obj["data"]) {
-                        $('#tables').append('<option value="'+obj["data"][table]+'">'+obj["data"][table]+'</option>');
-                    }
-                }
-            });
+    var fields = new Object();
+    function initConfig() {
+        $.ajax({
+            url: "./conf/mysql.json",
+            type: "GET",
+            async: false,
+            success: function(obj) {
+                $('#hostname').val(obj['hostname']);
+                $('#port').val(obj['port']);
+                $('#username').val(obj['username']);
+                $('#password').val(obj['password']);
+                $('#network').val(obj['network']);
+                $('#database').val(obj['database']);
+            }
         });
-        $("#tables").change(function(){
-            $.post('http://127.0.0.1:8151/selectTableLimit',
+    }
+    function initTable() {
+        $.post('http://127.0.0.1:8151/selectTableLimit',
             JSON.stringify({
                 'hostname' : $('#hostname').val(),
                 'port' : $('#port').val(),
@@ -167,6 +159,34 @@
                     });
                 }
             });
+    }
+    $(document).ready(function(){
+        $('#menu').load("./menu.html");
+        $('#insert').hide();
+        $('#save').hide();
+        initConfig();
+        $('#login').click(function(){
+            $.post('http://127.0.0.1:8151/loadTables',
+            JSON.stringify({
+                'hostname' : $('#hostname').val(),
+                'port' : $('#port').val(),
+                'username' : $('#username').val(),
+                'password' : $('#password').val(),
+                'network' : $('#network').val(),
+                'database' : $('#database').val()
+            }), function(data) {
+                var obj = JSON.parse(data);
+                $('#tables').empty();
+                if (obj["error"] == 0) {
+                    for (let table in obj["data"]) {
+                        $('#tables').append('<option value="'+obj["data"][table]+'">'+obj["data"][table]+'</option>');
+                    }
+                }
+                initTable();
+            });
+        });
+        $("#tables").change(function(){
+            initTable();
         });    
     });
 </script>

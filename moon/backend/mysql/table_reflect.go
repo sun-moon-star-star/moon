@@ -7,18 +7,20 @@ import (
 func GetTableType(table string)interface{} {
 	table = strings.ToLower(table)
 
-	if table == "trace" {
-		return &Trace{}
-	} else if table == "span" {
-		return &Span{}
-	} else if table == "span_reference" {
-		return &SpanReference{}
-	} else if table == "log" {
-		return &Log{}
-	} else if table == "tag" {
-		return &Tag{}
-	} else if table == "baggage" {
-		return &Baggage{}
+	if table == "trace_trace" {
+		return &TraceTrace{}
+	} else if table == "trace_span" {
+		return &TraceSpan{}
+	} else if table == "trace_span_reference" {
+		return &TraceSpanReference{}
+	} else if table == "trace_log" {
+		return &TraceLog{}
+	} else if table == "trace_tag" {
+		return &TraceTag{}
+	} else if table == "trace_baggage" {
+		return &TraceBaggage{}
+	} else if table == "log_log" {
+		return &LogLog{}
 	}
 
 	return nil
@@ -27,18 +29,20 @@ func GetTableType(table string)interface{} {
 func GetTableArrayType(table string) interface{} {
 	table = strings.ToLower(table)
 
-	if table == "trace" {
-		return &[]Trace{}
-	} else if table == "span" {
-		return &[]Span{}
-	} else if table == "span_reference" {
-		return &[]SpanReference{}
-	} else if table == "log" {
-		return &[]Log{}
-	} else if table == "tag" {
-		return &[]Tag{}
-	} else if table == "baggage" {
-		return &[]Baggage{}
+	if table == "trace_trace" {
+		return &[]TraceTrace{}
+	} else if table == "trace_span" {
+		return &[]TraceSpan{}
+	} else if table == "trace_span_reference" {
+		return &[]TraceSpanReference{}
+	} else if table == "trace_log" {
+		return &[]TraceLog{}
+	} else if table == "trace_tag" {
+		return &[]TraceTag{}
+	} else if table == "trace_baggage" {
+		return &[]TraceBaggage{}
+	} else if table == "log_log" {
+		return &[]LogLog{}
 	}
 
 	return nil

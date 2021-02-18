@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="../dist/css/semantic.css">
+  <title>rongming</title>
+</head>
+<body>
+   <div class="container ui fluid">
+     <div class="ui grid">
+        <div id="menu" class="ui two wide column left fixed vertical menu">
+        </div>
+        <div class="ui fourteen wide column segment">
+          <h2 class="ui left floated header">Log</h2>
+          <div class="ui clearing divider"></div>
+          <div class="ui cards" >
+            <div class="card">
+              <div class="content">
+                <div class="meta">2020 01 02 ... 2020 01 02</div>
+                <div class="description">
+                    你是什么光
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+  </div>
+</body>
+<script src="../dist/js/jquery.js"></script>
+<script>
+  $(document).ready(function(){
+    $('#menu').load("./menu.html");
+    $.post('http://127.0.0.1:8151/selectTableLimit',
+        JSON.stringify({
+            'hostname' : $('#hostname').val(),
+            'port' : $('#port').val(),
+            'username' : $('#username').val(),
+            'password' : $('#password').val(),
+            'network' : $('#network').val(),
+            'database' : "log",
+            'table' : "log",
+            'num' : 20
+        }), function(data) {
+            var obj = JSON.parse(data);
+            $('#table_columns').empty();
+            $('#table_lists').empty();
+            $('#save').hide();
+            if (obj["error"] == 0) {
+                fields[$("#tables").val()] = new Array();
+                if (obj["data"].length != 0) {
+                }
+            }
+        });
+  });
+</script>
+</html>

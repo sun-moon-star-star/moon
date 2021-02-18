@@ -109,10 +109,11 @@ func SelectTableLimit(writer http.ResponseWriter, request *http.Request) {
 	if (err != nil) {
 		goto err
 	} else {
+		database := params["database"].(string)
 		table := params["table"].(string)
 		num := params["num"]
 
-		data := GetTableArrayType(table)
+		data := GetTableArrayType(database + "_" + table)
 		if data == nil {
 			goto err
 		}
